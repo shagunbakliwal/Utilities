@@ -36,7 +36,7 @@ public class Screenshot {
 		long count = 1;
 		while (true) {
 			Thread.sleep(delay);
-			file = writingDirectory = new File(pathToWrite + "/" + count++ + PERIOD_SEPARATOR + format);
+			file = new File(pathToWrite + "/" + count++ + PERIOD_SEPARATOR + format);
 			ImageIO.write(robot.createScreenCapture(rectangle), format, file);
 			System.out.println("Saved " + file.getAbsoluteFile());
 		}
