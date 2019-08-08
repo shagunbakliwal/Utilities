@@ -19,7 +19,7 @@ public class CustomCron implements SchedulingConfigurer {
 		Runnable runnable = new CustomTask();
 		long interval = 3000;
 		long initialDelay = 5000;
-		taskRegistrar.addCronTask(new CronTask(runnable, new CronTrigger("30 14 14 * * *", TimeZone.getDefault())));// 2:08:30pm
+		taskRegistrar.addCronTask(new CronTask(runnable, new CronTrigger("30 8 14 * * *", TimeZone.getDefault())));// 2:08:30pm
 		taskRegistrar.addFixedRateTask(new IntervalTask(runnable, interval, initialDelay)); // 5 sec initial delay as
 																							// soon as app is up, then
 																							// trigger job in 0/3secs.
