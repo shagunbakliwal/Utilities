@@ -1,5 +1,4 @@
-
-import org.springframework.context.annotation.Configuration;
+package com.acg.utilities;
 import org.springframework.util.StringUtils;
 
 import ch.qos.logback.classic.Logger;
@@ -9,7 +8,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.OutputStreamAppender;
 
-@Configuration
 public class LoggerFactory {
 
 	private static final String defaultExtension = "log";
