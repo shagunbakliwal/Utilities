@@ -1,4 +1,5 @@
-import com.fasterxml.jackson.core.json.JsonWriteFeature;
+g.replaceAll("\"(\\w+)\":", "$1:")
+    import com.fasterxml.jackson.core.json.JsonWriteFeature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
