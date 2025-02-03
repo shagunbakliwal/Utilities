@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.core.json.JsonWriteFeature;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -33,7 +34,8 @@ public class CsvToJsonFormatter {
 
     public static String convertToJsonWithoutQuotes(List<Map<String, String>> data) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(SerializationFeature.QUOTE_FIELD_NAMES, false);
+        //objectMapper.configure(SerializationFeature.QUOTE_FIELD_NAMES, false);
+        objectMapper.disable(JsonWriteFeature.QUOTE_FIELD_NAMES.mappedFeature());
         return objectMapper.writeValueAsString(data);
     }
 
