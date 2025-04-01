@@ -1,0 +1,104 @@
+Feature: GraphQL API Testing
+
+  Scenario: Fetch user details by ID
+    Given the GraphQL query:
+      """
+      query getUser($id: ID!) {
+        user(id: $id) {
+          id
+          name
+          email
+        }
+      }
+      """
+    And the variables:
+      | id  |
+      | 123 |
+    When I send the GraphQL request
+    Then the response status should be 200
+    And the response should contain:
+      | path            | value          |
+      | data.user.id    | 123            |
+      | data.user.name  | John Doe       |
+      | data.user.email | john@example.com |
+
+  Scenario: Create a new user
+    Given the GraphQL mutation:
+      """
+      mutation createUser($input: UserInput!) {
+        createUser(input: $input) {
+          id
+          name
+          email
+        }
+      }
+      """
+    And the variables:
+      | input.name  | input.email       |
+      | Alice Smith | alice@example.com |
+    When I send the GraphQL request
+    Then the response status should be 200
+    And the response should contain:
+      | path            | value            |
+      | data.createUser.name  | Alice Smith       |
+      | data.createUser.email | alice@example.com |
+
+  Step Definitions (Spring Boot 3):
+
+  @Component
+  @Slf4j
+  @RequiredArgsConstructor
+  public class GraphQLStepDefinitions {
+      private final TestRestTemplate restTemplate;
+      private String query;
+      private Map<String, Object> variables;
+      private ResponseEntity<String> response;
+
+      @Given("the GraphQL query:")
+      public void givenGraphQLQuery(String query) {
+          this.query = query;
+      }
+
+      @Given("the GraphQL mutation:")
+      public void givenGraphQLMutation(String mutation) {
+          this.query = mutation;
+      }
+
+      @Given("the variables:")
+      public void givenVariables(Map<String, String> variables) {
+          this.variables = new HashMap<>(variables);
+      }
+
+      @When("I send the GraphQL request")
+      public void whenISendTheGraphQLRequest() {
+          Map<String, Object> requestPayload = new HashMap<>();
+          requestPayload.put("query", query);
+          requestPayload.put("variables", variables);
+
+          HttpHeaders headers = new HttpHeaders();
+          headers.setContentType(MediaType.APPLICATION_JSON);
+          HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestPayload, headers);
+
+          response = restTemplate.exchange("/graphql", HttpMethod.POST, entity, String.class);
+      }
+
+      @Then("the response status should be {int}")
+      public void thenResponseStatusShouldBe(int status) {
+          assertEquals(status, response.getStatusCodeValue());
+      }
+
+      @Then("the response should contain:")
+      public void thenResponseShouldContain(Map<String, String> expectedValues) {
+          ObjectMapper objectMapper = new ObjectMapper();
+          try {
+              JsonNode rootNode = objectMapper.readTree(response.getBody());
+              expectedValues.forEach((path, value) -> {
+                  JsonNode actualNode = rootNode.at("/" + path.replace(".", "/"));
+                  assertEquals(value, actualNode.asText());
+              });
+          } catch (Exception e) {
+              log.error("Error parsing response JSON", e);
+              fail("Invalid JSON response");
+          }
+      }
+  }
