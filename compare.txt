@@ -1,0 +1,72 @@
+import java.io.*;
+import java.util.Arrays;
+
+public class CompareLargeCSV {
+    public static void main(String[] args) {
+        String file1 = "huge_file1.csv";
+        String file2 = "huge_file2.csv";
+        String outputFile = "mismatches.csv";
+
+        compareCSVFiles(file1, file2, outputFile);
+    }
+
+    private static void compareCSVFiles(String file1, String file2, String outputFile) {
+        try (BufferedReader br1 = new BufferedReader(new FileReader(file1));
+             BufferedReader br2 = new BufferedReader(new FileReader(file2));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
+
+            // Read headers
+            String header1 = br1.readLine();
+            String header2 = br2.readLine();
+
+            // Validate header consistency
+            if (header1 == null || header2 == null || !header1.equals(header2)) {
+                System.out.println("Headers do not match or files are empty.");
+                return;
+            }
+
+            // Write headers to output file
+            bw.write("Mismatch Found in Columns\n");
+            bw.write(header1 + " | " + header2 + "\n");
+
+            String line1, line2;
+            int lineNum = 1;
+
+            while ((line1 = br1.readLine()) != null & (line2 = br2.readLine()) != null) {
+                lineNum++;
+
+                String[] cols1 = line1.split(",");
+                String[] cols2 = line2.split(",");
+
+                // Ensure both rows have the same column count
+                if (cols1.length != cols2.length) {
+                    bw.write("Line " + lineNum + ": Column count mismatch\n");
+                    bw.write(line1 + " | " + line2 + "\n");
+                    continue;
+                }
+
+                // Check for mismatched columns
+                boolean mismatchFound = false;
+                StringBuilder mismatchedColumns = new StringBuilder();
+
+                for (int i = 0; i < cols1.length; i++) {
+                    if (!cols1[i].trim().equals(cols2[i].trim())) {
+                        mismatchFound = true;
+                        mismatchedColumns.append("Column ").append(i + 1).append(" differs, ");
+                    }
+                }
+
+                // If mismatch found, write to output file
+                if (mismatchFound) {
+                    bw.write("Line " + lineNum + ": " + mismatchedColumns + "\n");
+                    bw.write(line1 + " | " + line2 + "\n");
+                }
+            }
+
+            System.out.println("Comparison complete. Mismatches written to " + outputFile);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
