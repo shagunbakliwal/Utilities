@@ -149,5 +149,7 @@ Custom delimiter support	Easy for `
 
 ---
 
-Would you like a version that works with multiple entity types and integrates into a ClassifierCompositeItemWriter?
+Would you like a version that works with multiple entity types and integrates into a ClassifierCompositeItemWriter
+
+=LOWER(LEFT(A1,FIND("_",A1)-1)) & UPPER(MID(A1,FIND("_",A1)+1,1)) & MID(A1,FIND("_",A1)+2,LEN(A1))
 
