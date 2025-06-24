@@ -1,1 +1,236 @@
 =LOWER(LEFT(A1,1) & TEXTJOIN("", TRUE, IF(ISNUMBER(FIND(MID(A1,ROW(INDIRECT("2:"&LEN(A1))),1),"ABCDEFGHIJKLMNOPQRSTUVWXYZ")), "_" & MID(A1,ROW(INDIRECT("2:"&LEN(A1))),1), MID(A1,ROW(INDIRECT("2:"&LEN(A1))),1))))
+
+
+INVOICE
+
+SHAKTHI FOOD & BEVERAGE SERVICE LLP
+
+Biergarten-Whitefield
+
+No.2. Doddanekundi Village, Seetharampalya
+
+Hoodi. Krishnarajapurem, Bangalore, Karnataka 560048 Phone:
+
+GSTIN: 29ACWFS7385J1ZV
+
+Bill No: 19587
+
+Date: 23-Jun-2025
+
+Table No: B-28
+
+Stwd: Kunal K
+
+Time: 22:04
+
+Pax: 15
+
+TABLE
+
+ITEM
+
+QTY
+
+AMT
+
+Virgin Sangria
+
+1
+
+295.00
+
+Umami Apple Cinnamon
+
+1
+
+175.00
+
+Chicken Popcorn
+
+4
+
+740.00
+
+Diet Coke (Can)
+
+1
+
+125.00
+
+French Fries
+
+1
+
+325.00
+
+Guava Mary
+
+1
+
+295.00
+
+Oopsie Daisy (Hefeweizen)
+
+Pint
+
+2
+
+730.00
+
+Indiana
+
+1
+
+595.00
+
+Jager Bomb
+
+1
+
+725.00
+
+Margherita Pizza
+
+1
+
+545.00
+
+Nachos
+
+1
+
+345.00
+
+Onion Rings
+
+1
+
+345.00
+
+Packaged Drinking Water
+
+5
+
+125.00
+
+Penne Creamy Cheese Sauce
+
+Veg
+
+1
+
+425.00
+
+Nik's 9 to 5 (Pilsner) Pin
+
+t
+
+4
+
+1460.00
+
+Virgin Mojito
+
+5
+
+1475.00
+
+Vodka Gimlet
+
+2
+
+990.00
+
+Peri Peri Chicken Tikka
+
+3
+
+1185.00
+
+Mushroom Galouti
+
+1
+
+345.00
+
+Garlic Cheese Flat Bread
+
+1
+
+345.00
+
+Litchi Twist
+
+1
+
+295.00
+
+Wa Mushroom
+
+1
+
+345.00
+
+Spicy Roasted Paneer
+
+1
+
+345.00
+
+Total Qty: 41
+
+Sub Total: 12575.00
+
+Tax Summary
+
+TAX
+
+RATE
+
+AMT
+
+CGST- F&B
+
+2.5%
+
+216.75
+
+SGST- F&B
+
+2.5%
+
+216.75
+
+Cre Veg Nachos Cr
+
+Dahi
+
+Frenc
+
+Nachos
+
+Penne C
+
+Peri Peri
+
+Wa Mushroo
+
+Spicy Roas
+
+Lantern Chi
+
+Total Qty:
+
+Total Tax
+
+433.50
+
+Round off
+
+0.50
+
+TAX
+
+PAY: 13009.00
+
+Powered By Digitory
