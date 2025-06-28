@@ -58,3 +58,19 @@ From Bill #19588: ₹5,014.00
 
 Let me know if you'd like it in Excel or tabular format (CSV) for download.
 
+
+#!/bin/bash
+
+# Get job info for pattern (use ALL or %yourpattern%)
+PATTERN="ALL"
+OUTPUT="/tmp/autosys_jobs_sorted.txt"
+
+# Extract job name, status, and start time
+autorep -J "$PATTERN" -l 1 | awk '
+/^Job Name/ { job=$3 }
+/^Status/ { status=$2 }
+/^Start Time/ { print job, status, $3, $4 }
+' | sort -k3,3 -k2 > "$OUTPUT"
+
+# Print result
+cat "$OUTPUT"
