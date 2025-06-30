@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="false">
+
+  <property name="LOG_HOME" value="logs"/>
+  <property name="LOG_FILE" value="${LOG_HOME}/application-log.json"/>
+
+  <!-- Async logging for high performance -->
+  <appender name="ASYNC_JSON" class="ch.qos.logback.classic.AsyncAppender">
+    <queueSize>5120</queueSize>
+    <discardingThreshold>0</discardingThreshold>
+    <includeCallerData>false</includeCallerData>
+    <neverBlock>true</neverBlock>
+    <appender-ref ref="JSON_FILE"/>
+  </appender>
+
+  <!-- File appender with time-based rolling -->
+  <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_FILE}</file>
+
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- Daily rollover -->
+      <fileNamePattern>${LOG_HOME}/archived/application-log.%d{yyyy-MM-dd}.json.gz</fileNamePattern>
+      <!-- Keep logs for 30 days -->
+      <maxHistory>30</maxHistory>
+      <!-- Total size cap -->
+      <totalSizeCap>5GB</totalSizeCap>
+      <cleanHistoryOnStart>true</cleanHistoryOnStart>
+    </rollingPolicy>
+
+    <!-- JSON encoder with dynamic fields -->
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <timestamp>
+          <fieldName>@timestamp</fieldName>
+        </timestamp>
+        <logLevel/>
+        <threadName/>
+        <loggerName/>
+        <message/>
+        <arguments/>
+        <stackTrace/>
+        <context/>
+        <mdc/> <!-- allows dynamic fields from MDC context -->
+      </providers>
+    </encoder>
+  </appender>
+
+  <!-- Root Logger -->
+  <root level="INFO">
+    <appender-ref ref="ASYNC_JSON"/>
+  </root>
+
+</configuration>
