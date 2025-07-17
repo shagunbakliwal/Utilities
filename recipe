@@ -1,0 +1,109 @@
+<dependencies>
+  <dependency>
+    <groupId>org.openrewrite</groupId>
+    <artifactId>rewrite-java</artifactId>
+    <version>8.10.0</version>
+  </dependency>
+  <dependency>
+    <groupId>org.openrewrite</groupId>
+    <artifactId>rewrite-maven-plugin</artifactId>
+    <version>5.0.0</version>
+  </dependency>
+</dependencies>
+
+
+package com.example.rewrite;
+
+import org.openrewrite.Recipe;
+import org.openrewrite.java.JavaIsoVisitor;
+import org.openrewrite.java.tree.J;
+import org.openrewrite.java.tree.JavaSourceFile;
+import org.openrewrite.java.JavaTemplate;
+import org.openrewrite.java.tree.TypeUtils;
+import org.openrewrite.java.tree.Space;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.TreeVisitor;
+import org.openrewrite.marker.Markers;
+
+import java.time.Duration;
+import java.util.*;
+
+public class GenerateMockitoTestRecipe extends Recipe {
+
+    @Override
+    public String getDisplayName() {
+        return "Generate basic Mockito test for public methods";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Adds simple JUnit + Mockito test methods to test classes for each public method in main class.";
+    }
+
+    @Override
+    public TreeVisitor<?, ExecutionContext> getVisitor() {
+        return new JavaIsoVisitor<ExecutionContext>() {
+
+            @Override
+            public J.CompilationUnit visitCompilationUnit(J.CompilationUnit cu, ExecutionContext ctx) {
+                if (!cu.getSourcePath().toString().contains("src/main")) {
+                    return cu;
+                }
+
+                List<J.ClassDeclaration> classes = cu.getClasses();
+                if (classes.isEmpty()) return cu;
+
+                J.ClassDeclaration mainClass = classes.get(0);
+                String className = mainClass.getSimpleName();
+                String testClassName = className + "Test";
+
+                List<J.MethodDeclaration> publicMethods = mainClass.getBody().getStatements().stream()
+                        .filter(J.MethodDeclaration.class::isInstance)
+                        .map(J.MethodDeclaration.class::cast)
+                        .filter(m -> m.getModifiers().stream().anyMatch(mod -> mod.getType().name().equals("Public")))
+                        .toList();
+
+                StringBuilder testMethods = new StringBuilder();
+                for (J.MethodDeclaration method : publicMethods) {
+                    String methodName = method.getSimpleName();
+                    testMethods.append(
+                        String.format("""
+                        @Test
+                        void test_%s() {
+                            %s obj = Mockito.mock(%s.class);
+                            // TODO: add method call and assertions
+                            Mockito.verify(obj).%s(/* args */);
+                        }
+
+                        """, methodName, className, className, methodName)
+                    );
+                }
+
+                JavaTemplate template = JavaTemplate.builder(this::getCursor, String.format("""
+                    import org.junit.jupiter.api.Test;
+                    import org.mockito.Mockito;
+
+                    public class %s {
+
+                        %s
+                    }
+                """, testClassName, testMethods.toString())).build();
+
+                return template.apply(updateCursor(cu), cu.getCoordinates().replace());
+            }
+        };
+    }
+}
+
+
+
+<plugin>
+  <groupId>org.openrewrite.maven</groupId>
+  <artifactId>rewrite-maven-plugin</artifactId>
+  <version>5.0.0</version>
+  <configuration>
+    <activeRecipes>
+      <recipe>com.example.rewrite.GenerateMockitoTestRecipe</recipe>
+    </activeRecipes>
+  </configuration>
+</plugin>
