@@ -1,6 +1,8 @@
 date -d "$(head -n 1 filename.txt | sed -n 's/.*DATE=\([0-9]\{6\}\).*/\1/p' | sed 's/../& /g')" +%Y-%m-%d
 
 
+head -n 1 filename.txt | sed -n 's/.*DATE=\([0-9]\{6\}\).*/\1/p' | xargs -I{} date -d {} +%Y-%m-%d
+
 date_input=$(head -n 1 filename.txt | sed -n 's/.*DATE=\([0-9]\{6\}\).*/\1/p')
 month=${date_input:0:2}
 day=${date_input:2:2}
