@@ -1,3 +1,5 @@
+date -d "$(head -n 1 filename.txt | sed -n 's/.*DATE=\([0-9]\{6\}\).*/\1/p' | sed 's/../& /g')" +%Y-%m-%d
+
 <dependencies>
   <dependency>
     <groupId>org.openrewrite</groupId>
