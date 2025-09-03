@@ -1,0 +1,15 @@
+#!/bin/bash
+
+DIR=${1:-.}
+
+json=$(
+  for f in "$DIR"/*; do
+    [ -f "$f" ] || continue
+    printf '"%s":%s,' "$(basename "$f")" "$(wc -l < "$f")"
+  done | sed 's/,$//' | sed 's/^/{/;s/$/}/'
+)
+
+# Escape quotes for job param
+escaped=$(printf '%s' "$json" | sed 's/"/\\\"/g')
+
+java -jar my-batch.jar "jsonParam=$escaped"
